@@ -1,11 +1,15 @@
-import { StatusBar } from 'expo-status-bar';
+
 import { StyleSheet, Text, View } from 'react-native';
+import HomeScreen from './components/screens/HomeScreen';
+import TextMemo from './components/atoms/textMemo';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+       
+      
+      <HomeScreen></HomeScreen>
+      
     </View>
   );
 }
@@ -13,8 +17,11 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#17223f',
     alignItems: 'center',
     justifyContent: 'center',
+    color:'#fbfafe',
+    paddingRight:2,
+
   },
 });
