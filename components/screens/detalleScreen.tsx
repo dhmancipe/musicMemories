@@ -2,30 +2,100 @@ import { View, Text, StyleSheet, Image } from "react-native";
 import { Track } from "../../api/repositories/apiMusic.types";
 import TextMemo from "../atoms/textMemo";
 import playIcon from "../../assets/play.png"
+import playBar from "../../assets/barplay.png"
+import star from "../../assets/estrella.png"
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { RootStackParams } from "../../routes/StackNavigator";
+import { useEffect } from "react";
+import ButtonMemo from "../atoms/buttonMemo";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Preview = ({ item }: { item: Track }) => {
-    //console.log(item.image[0]['#text'])
+const DetalleScreen = () => {
+    const navigation=useNavigation()
+
+    const params = useRoute<RouteProp<RootStackParams, 'Detail'>>().params
+    const addToStorage = async () => {
+        try {
+            // Obtener datos actuales de AsyncStorage
+            const existingDataString = await AsyncStorage.getItem('mostListened');
+            let existingData = existingDataString ? JSON.parse(existingDataString) : [];
+    
+            // Verificar si existingData es un array válido, si no, inicializar como un array vacío
+            if (!Array.isArray(existingData)) {
+                existingData = [];
+            }
+    
+            // Verificar si la canción ya está en la lista por algún identificador único
+            const songExists = existingData.some((song: any) => song.name === params.name); // Aquí debes ajustar la condición según la estructura de tus datos
+    
+            if (songExists) {
+                console.log('La canción ya está en la lista.');
+                return; // No hacer nada más si la canción ya está en la lista
+            }
+    
+            // Si ya hay 10 canciones, eliminar la primera para hacer espacio
+            const MAX_SONGS = 10;
+            if (existingData.length >= MAX_SONGS) {
+                existingData.shift(); // Eliminar la primera canción del arreglo
+            }
+    
+            // Agregar la nueva canción al final del arreglo
+            existingData.push(params);
+    
+            // Convertir a JSON y guardar en AsyncStorage
+            const updatedDataString = JSON.stringify(existingData);
+            await AsyncStorage.setItem('mostListened', updatedDataString);
+    
+            console.log('Canción agregada correctamente.');
+    
+        } catch (error) {
+            console.error('Error al agregar objeto a AsyncStorage:', error);
+        }
+    };
+    
+
+    useEffect(() => {
+      navigation.setOptions({
+        title:params?.name
+      })
+    }, [])
+     
+    
+    
     return (<View style={styles.item}>
-        <View>
-            {item.image.length > 0 &&
+        <View style={styles.addFav}>
+            
+            <ButtonMemo onPress={()=>addToStorage()}>
+            <TextMemo type="title">Fav </TextMemo>
                 <Image
-                    style={styles.image}
-                    source={playIcon} // Utiliza la URL de la imagen en el tamaño deseado
+                    style={styles.imageButton}
+                    source={star} 
                     resizeMode="contain"
 
                 />
-            }
+                </ButtonMemo>
+        </View>
+        <View>
+            
+                <Image
+                    style={styles.image}
+                    source={{ uri:params?.image  }} 
+                    resizeMode="contain"
+
+                />
+            
         </View>
 
         <View style={styles.textContainer}>
-            <TextMemo type="title">{item.name}</TextMemo>
-            <TextMemo type="parag">{item.artist.name}</TextMemo>
+            <TextMemo type="bigTitle">{params?.name}</TextMemo>
+            <TextMemo type="parag">{params?.artist}</TextMemo>
            
         </View>
+        
         <View style={styles.playContainer}>
                 <Image
                     style={styles.play}
-                    source={playIcon}
+                    source={playBar}
                     resizeMode="contain"
 
                 />
@@ -37,39 +107,53 @@ const Preview = ({ item }: { item: Track }) => {
     ;
 
 
-export default Preview;
+export default DetalleScreen;
 
 const styles = StyleSheet.create({
     item: {
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: 'column',
         backgroundColor: '#17223f',
         padding: 3,
         marginVertical: 3,
-        marginRight: 10,
-        marginLeft:5,
-        borderRadius: 15,
-        borderWidth: 5,
-        borderColor: '#172230',
+       
+        
         width:'100%'
     },
     image: {
-        width: 180,
-        height: 180,
-        borderRadius: 10
+        width: 300,
+        height: 300,
+        borderRadius: 10,
+        alignSelf: 'center',
+        marginTop:60,
+        marginBottom:50
+    },
+    imageButton: {
+        width: 30,
+        height: 30,
+        
+        alignSelf: 'center',
+        
     },
     play: {
-        width: 25,
-        height: 25,
-        alignSelf: 'flex-end'
+        width: 350,
+        height: 85,
+        alignSelf: 'center'
     },
     textContainer: {
-        paddingLeft: 7,
+        paddingLeft: 25,
         
     }, 
     playContainer: {
-        position: 'absolute', // Posiciona el contenedor de la imagen de play de forma absoluta
-        right: 10, // A 10 píxeles del borde derecho
-        bottom: 10, // Alinea la imagen al fondo
+        flex: 1,
+    justifyContent: 'center', // centra verticalmente
+    alignItems: 'center',
+    
     },
+    addFav:{
+        flexDirection: 'row', 
+        justifyContent: 'flex-end', 
+        marginRight: 30, 
+        marginTop: 50,
+    }
 });

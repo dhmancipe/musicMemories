@@ -1,27 +1,21 @@
 
-import { StyleSheet, Text, View } from 'react-native';
+import 'react-native-gesture-handler';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import HomeScreen from './components/screens/HomeScreen';
 import TextMemo from './components/atoms/textMemo';
+import DetalleScreen from './components/screens/detalleScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { StackNavigator } from './routes/StackNavigator';
 
 export default function App() {
   return (
-    <View style={styles.container}>
+    <NavigationContainer >
        
+       <StackNavigator/>
       
-      <HomeScreen></HomeScreen>
       
-    </View>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#17223f',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color:'#fbfafe',
-    paddingRight:2,
 
-  },
-});

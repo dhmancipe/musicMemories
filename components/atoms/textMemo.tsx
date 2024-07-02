@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 interface MusicTextProps {
-    type?: 'title'|'parag';
+    type?: 'title'|'parag'|'bigTitle';
     children?: React.ReactNode;
 
 }
 
 const TextMemo=({type,children}:MusicTextProps)=>{
     return(<Text 
-        style={ type== 'title'? styles.h2: styles.p}
+        style={ type== 'title'? styles.h2: type== 'bigTitle'? styles.h1:styles.p}
         >{children}</Text>)
 
 }
@@ -23,6 +23,12 @@ const styles = StyleSheet.create({
     p: {  
         fontSize:16,
         color:'#fbfafe'  ,
+        textAlign:'left'
+      },
+      h1: {  
+        fontSize:24,
+        color:'#fbfafe' ,
+        fontWeight:'700',
         textAlign:'left'
       },
   });

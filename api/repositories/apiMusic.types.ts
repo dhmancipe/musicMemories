@@ -24,6 +24,13 @@ interface Image {
     artist: Artist;
     image: Image[];
   }
+  export interface TrackPreview {
+    name: string;
+    
+    artist: Artist;
+    image: string;
+  }
+
   
   export interface Tracks {
     track: Track[];

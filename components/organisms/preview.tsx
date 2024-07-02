@@ -1,43 +1,47 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+
+import React, { useState } from 'react';
+import { View, StyleSheet, Image, Pressable, Dimensions } from "react-native";
 import { Track } from "../../api/repositories/apiMusic.types";
 import TextMemo from "../atoms/textMemo";
-import playIcon from "../../assets/play.png"
+import playIcon from "../../assets/play.png";
 
-const Preview = ({ item }: { item: Track }) => {
-    //console.log(item.image[0]['#text'])
-    return (<View style={styles.item}>
-        <View>
-            {item.image.length > 0 &&
-                <Image
-                    style={styles.image}
-                    source={{ uri: item.image[3]['#text'] }} // Utiliza la URL de la imagen en el tamaño deseado
-                    resizeMode="contain"
 
-                />
-            }
-        </View>
 
-        <View style={styles.textContainer}>
-            <TextMemo type="title">{item.name}</TextMemo>
-            <TextMemo type="parag">{item.artist.name}</TextMemo>
-           
-        </View>
-        <View style={styles.playContainer}>
+const Preview = ({ item, onPress }: { item: Track, onPress: (image: string, name: string, artist: string) => void }) => {
+
+    const { width } = Dimensions.get('window');
+
+
+    return (
+        <Pressable style={[styles.item, { width: width - 20 }]} onPress={() => onPress(item?.image[0]['#text'] ?? '', item.name, item.artist.name)}>
+            <View>
+                {item.image.length > 0 &&
+                    <Image
+                        style={styles.image}
+                        source={{ uri: item?.image[0]['#text'] }}
+                        resizeMode="contain"
+                    />
+                }
+            </View>
+
+            <View style={styles.textContainer}>
+                <TextMemo type="title">{item.name}</TextMemo>
+                <TextMemo type="parag">{item.artist.name ?? item.artist}</TextMemo>
+            </View>
+
+            <View style={styles.playContainer}>
                 <Image
                     style={styles.play}
                     source={playIcon}
                     resizeMode="contain"
-
                 />
-
             </View>
-
-    </View>)
-}
-    ;
-
+        </Pressable>
+    );
+};
 
 export default Preview;
+
 
 const styles = StyleSheet.create({
     item: {
@@ -46,12 +50,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#17223f',
         padding: 3,
         marginVertical: 3,
-        marginRight: 10,
-        marginLeft:5,
+
+        marginLeft: 5,
         borderRadius: 15,
         borderWidth: 5,
         borderColor: '#172230',
-        width:'100%'
+
     },
     image: {
         width: 75,
@@ -65,11 +69,11 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         paddingLeft: 7,
-        
-    }, 
+
+    },
     playContainer: {
-        position: 'absolute', // Posiciona el contenedor de la imagen de play de forma absoluta
-        right: 10, // A 10 píxeles del borde derecho
-        bottom: 10, // Alinea la imagen al fondo
+        position: 'absolute',
+        right: 10,
+        bottom: 10,
     },
 });
