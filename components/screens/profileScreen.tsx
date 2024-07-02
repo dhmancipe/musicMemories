@@ -1,15 +1,14 @@
 import { FlatList, Text, View, StyleSheet, SafeAreaView } from "react-native";
 import React, { useEffect, useState } from 'react';
 import TextMemo from "../atoms/textMemo";
-import PublicClient from "../../api/clients/publicClient";
+
 import { TopTracksResponse, Track, TrackPreview, Tracks } from "../../api/repositories/apiMusic.types";
 import Preview from "../organisms/preview";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootStackParams } from "../../routes/StackNavigator";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfileScreen = () => {
-  const [data, setData] = useState<TopTracksResponse | null>(null);
+
   const [dataStorage, setDataStorage] = useState<Track[] | null>(null);
 
 
@@ -36,14 +35,15 @@ const ProfileScreen = () => {
     try {
       const jsonValue = await AsyncStorage.getItem('mostListened');
       let mostListenedObject = jsonValue ? JSON.parse(jsonValue) : [];
-      //setDataStorage(mostListenedObject)
+
       const tracks2 = mapTrackPreviewsToTracks(mostListenedObject ?? [])
       const topTracksResponse: TopTracksResponse = {
         tracks: tracks2 ?? [],
         "@attr": { country: '', page: '', perPage: '', totalPages: '', total: '' }
       };
       const tracks3 = topTracksResponse?.tracks.track
-      setDataStorage(tracks3)
+      const reversedTracks = tracks3.reverse();
+      setDataStorage(reversedTracks);
 
 
       return jsonValue;

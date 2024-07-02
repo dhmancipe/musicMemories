@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Image } from "react-native";
-import { Track } from "../../api/repositories/apiMusic.types";
+
 import TextMemo from "../atoms/textMemo";
-import playIcon from "../../assets/play.png"
+
 import playBar from "../../assets/barplay.png"
 import star from "../../assets/estrella.png"
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
@@ -16,33 +16,24 @@ const DetalleScreen = () => {
     const params = useRoute<RouteProp<RootStackParams, 'Detail'>>().params
     const addToStorage = async () => {
         try {
-            // Obtener datos actuales de AsyncStorage
+            
             const existingDataString = await AsyncStorage.getItem('mostListened');
-            let existingData = existingDataString ? JSON.parse(existingDataString) : [];
-    
-            // Verificar si existingData es un array válido, si no, inicializar como un array vacío
+            let existingData = existingDataString ? JSON.parse(existingDataString) : [];    
+          
             if (!Array.isArray(existingData)) {
                 existingData = [];
             }
-    
-            // Verificar si la canción ya está en la lista por algún identificador único
-            const songExists = existingData.some((song: any) => song.name === params.name); // Aquí debes ajustar la condición según la estructura de tus datos
-    
-            if (songExists) {
+                            const songExists = existingData.some((song: any) => song.name === params.name);            if (songExists) {
                 console.log('La canción ya está en la lista.');
-                return; // No hacer nada más si la canción ya está en la lista
-            }
-    
-            // Si ya hay 10 canciones, eliminar la primera para hacer espacio
+                return; 
+            }    
+            
             const MAX_SONGS = 10;
             if (existingData.length >= MAX_SONGS) {
-                existingData.shift(); // Eliminar la primera canción del arreglo
-            }
-    
-            // Agregar la nueva canción al final del arreglo
-            existingData.push(params);
-    
-            // Convertir a JSON y guardar en AsyncStorage
+                existingData.shift(); 
+            }    
+           
+            existingData.push(params);            
             const updatedDataString = JSON.stringify(existingData);
             await AsyncStorage.setItem('mostListened', updatedDataString);
     
